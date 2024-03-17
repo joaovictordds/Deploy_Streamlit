@@ -13,7 +13,7 @@ import joblib
 st.set_page_config(page_title = 'My Projects', layout = 'centered', initial_sidebar_state = 'auto')
 
 st.sidebar.write('''
-### My projects of Data Analysis, Data Science, Code and Others 
+### Projetos de Data Analysis, Data Science, códigos e outros. 
 ''')
 
 st.sidebar.markdown('---')
