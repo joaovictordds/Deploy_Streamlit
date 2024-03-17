@@ -3,6 +3,12 @@ import pdfplumber as pdf
 import nltk
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
+import pandas as pd
+import joblib
+
+
+
+
 
 # --------------------------------------------------------------------------------------------------
 # GUIA LATERAL
@@ -15,13 +21,29 @@ st.sidebar.write('''
 
 st.sidebar.markdown('---')
 
-paginas = ['Nuvem de Palavras']
+paginas = ['Inicio','Nuvem de Palavras','Modelo - Liberação de Crédito']
 pagina = st.sidebar.radio('Select one job:', paginas)
 
 st.sidebar.markdown('---')
 
 # --------------------------------------------------------------------------------------------------
 # PROJETOS
+
+if pagina == 'Inicio':
+     
+	st.write('''
+
+	### Bem vindo
+		  
+	''')	
+
+		
+	st.write('''
+	Site com projetos de data analist (em reforma)
+	
+	''')	
+    
+
 
 if pagina == 'Nuvem de Palavras':
 
@@ -83,5 +105,77 @@ if pagina == 'Nuvem de Palavras':
 		wordcloud.to_file("wordcloud.png")
 		st.image('wordcloud.png')
 
+ 
+if pagina == 'Modelo - Liberação de Crédito':
 
+    modelo = joblib.load('modeloclas.pkl')  
+    subpag = ['Liberação de crédito'] #'Sugestão de quantia' 
+    pag = st.sidebar.selectbox('Selecione o modelo:', subpag)
+    
+    if pag == 'Liberação de crédito':
+        
+        st.title('LIberação de crédito')
+        st.markdown('---')
+              
+      
+
+    # INPUT DE VARIAVEIS
+
+        saldocon = ['sem conta','negativo','positivo']
+        cont = st.selectbox('Situação da conta', saldocon)
+
+        #st.write('Quantidade de parcelas')
+        dur = st.number_input('Qtde. Parcelas', 1, 120)
+
+        #st.write('Histórico do cliente:')
+        his = ['pagamento em dia','já atrasou pagamentos']
+        histori = st.selectbox('Histórico do cliente', his) 
+
+        #st.write('Valor em conta:')
+        quant = st.number_input('Quantia solicitada', 1, 1000000)
+
+        his = ['ate 1000','>1000','nao']
+        poupan = st.selectbox('Saldo atual na instituição', his)
+
+        empr = ['1-4 anos','> 7 anos','4-7 anos','desempregado']
+        empreg = st.selectbox('Tempo de emprego', empr)
+		
+        #Novos dados
+        duracao = dur
+        quantia = quant
+        conta = cont
+        historico = histori
+        poupança = poupan
+        emprego = empreg
+
+        # Dados
+        tdados = {'conta': [conta],
+                'historico': [historico],
+                'poupança': [poupança],
+                'emprego': [emprego],
+                'duração': duracao,
+                'quantia': quantia}
+
+        # Criar DataFrame
+        dtf = pd.DataFrame(tdados)
+        
+
+        
+        st.markdown('---')
+        
+        if st.button('Executar modelo'):
+            
+            novos_dados = modelo.predict(dtf)
+            saida = []
+            
+            if novos_dados == 0:
+                saida = 'Não aprovar novo crédito'
+                
+            else :
+                saida = 'Aprovar'
+                
+            st.subheader(saida)
+        
+        st.markdown('---')
+        
 
