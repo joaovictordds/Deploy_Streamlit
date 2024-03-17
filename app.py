@@ -35,7 +35,7 @@ if pagina == 'Inicio':
     st.subheader("Explorando o mundo dos dados")
 
     # Imagem
-    st.image("da.png", caption="Imagem PNG", use_column_width=True)
+    st.image("da.png",  use_column_width=True)
 
     # Texto
     st.write(             
