@@ -19,7 +19,7 @@ st.sidebar.write('''
 st.sidebar.markdown('---')
 
 paginas = ['Inicio','Nuvem de Palavras','Modelo - Liberação de Crédito']
-pagina = st.sidebar.radio('Select one job:', paginas)
+pagina = st.sidebar.radio('Selecione um projeto:', paginas)
 
 st.sidebar.markdown('---')
 
