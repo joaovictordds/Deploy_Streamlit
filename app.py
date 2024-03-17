@@ -7,9 +7,6 @@ import pandas as pd
 import joblib
 
 
-
-
-
 # --------------------------------------------------------------------------------------------------
 # GUIA LATERAL
 
@@ -31,17 +28,28 @@ st.sidebar.markdown('---')
 
 if pagina == 'Inicio':
      
-	st.write('''
+    # Título da página
+    st.title("Bem-vindo ao meu portfolio de projetos e análises de dados")
 
-	### Bem vindo
-		  
-	''')	
+    # Cabeçalho
+    st.subheader("Explorando o mundo dos dados")
 
-		
-	st.write('''
-	Site com projetos de data analist (em reforma)
-	
-	''')	
+    # Imagem
+    st.image("C:\\Users\\Joao Victor\\Documents\\Cursos Tec\\Data Science\\Projetos\\Deploy\\da.png")
+
+    # Texto
+    st.write(             
+            '**Este é um site dedicado à análise de dados, data science e data analytics. Aqui você encontrará insights, projetos, e muito mais!**\n'
+            '- [Análise](https://medium.com/@joaovictordds/an%C3%A1lise-de-dados-do-banco-xyz-02eb55e8d7b9) do comportamento do banco XYZ e de seus clientes.\n'
+            '- [Here](https://medium.com/@joaovictordds/data-analysis-of-xyz-bank-f9d6da27e0cc) the same analysis of the XYZ Bank in english.\n'
+            '- Análise dos dados dos últimos balanços de [Petrobras](https://medium.com/@joaovictordds/an%C3%A1lise-explorat%C3%B3ria-de-petrobr%C3%A1s-utilizando-python-628f69ab5011)\n'     
+            '- [Exploratory analysis](https://medium.com/@joaovictordds/exploratory-analysis-of-petrobras-with-python-a00de6496e36) of the numbers of the Petrobras company.\n'
+            '- [Market place](https://medium.com/@joaovictordds/delivery-center-c4b8a66df76b) Delivery Center em português.\n'
+            '- [Delivery Center](https://medium.com/@joaovictordds/delivery-center-84651776d1f1) analysis in english.\n'
+            "- In [français](https://medium.com/@joaovictordds/delivery-center-4173b14b2518), analyse des données de l'entreprise Delivery Center."
+
+            )
+        
     
 
 
