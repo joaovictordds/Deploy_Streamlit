@@ -21,6 +21,8 @@ st.sidebar.markdown('---')
 paginas = ['Inicio','Nuvem de Palavras','Modelo - Liberação de Crédito']
 pagina = st.sidebar.radio('Selecione um projeto:', paginas)
 
+st.sidebar.image("linkedin.png", use_column_width=True)
+
 st.sidebar.markdown('---')
 
 # --------------------------------------------------------------------------------------------------
