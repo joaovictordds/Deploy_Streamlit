@@ -23,6 +23,19 @@ pagina = st.sidebar.radio('Selecione um projeto:', paginas)
 
 st.sidebar.markdown('---')
 
+#links importantes
+
+st.sidebar.write('''
+             
+Acesse:\n
+- [Portfolio](https://www.datascienceportfol.io/joaovictor)\n
+- [GitHub](https://github.com/joaovictordds)\n
+- [LinkedIn](https://linkedin.com/in/joaovictordds)\n            
+
+''')
+
+st.sidebar.markdown('---')
+
 # --------------------------------------------------------------------------------------------------
 # PROJETOS
 
