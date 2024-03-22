@@ -132,13 +132,14 @@ if pagina == 'Modelo - Liberação de Crédito':
     modelo = joblib.load('modeloclas.pkl')  
     subpag = ['Liberação de crédito'] #'Sugestão de quantia' 
     pag = st.sidebar.selectbox('Selecione o modelo:', subpag)
-    
+    st.image("credit.png",  use_column_width=True)
+	
     if pag == 'Liberação de crédito':
         
         st.title('LIberação de crédito')
         st.markdown('---')
         # Imagem
-    	st.image("credit.png",  use_column_width=True)
+    	
      
       
 
