@@ -137,7 +137,9 @@ if pagina == 'Modelo - Liberação de Crédito':
         
         st.title('LIberação de crédito')
         st.markdown('---')
-              
+        # Imagem
+    	st.image("credit.png",  use_column_width=True)
+     
       
 
     # INPUT DE VARIAVEIS
