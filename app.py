@@ -133,10 +133,12 @@ if pagina == 'Modelo - Liberação de Crédito':
     subpag = ['Liberação de crédito'] #'Sugestão de quantia' 
     pag = st.sidebar.selectbox('Selecione o modelo:', subpag)
     st.image("credit.png",  use_column_width=True)
+    st.write(' Uma fintech disponibilizou dados para análise da situação dos clientes epara elaboração de um modelo para aprovar futuros empréstimos')
+    st.write('[Acesse](https://medium.com/@joaovictordds/german-bank-eda-ml-parte-2-3-7c499a59c664) a anáise dos dados da empresa')
 	
     if pag == 'Liberação de crédito':
         
-        st.title('LIberação de crédito')
+        st.title('Liberação de crédito')
         st.markdown('---')
         # Imagem
     	
