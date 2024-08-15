@@ -52,7 +52,7 @@ if pagina == 'Inicio':
 
     # Texto
     st.write(             
-            '**Este é um blog pessoal dedicado à análise de dados, data science e data analytics onde você encontrará modelos de ML, projetos, e análise de dados.**\n'
+            '**Este é um blog pessoal dedicado à análise de dados, data science e data analytics onde você encontrará modelos de ML, projetos, análise de dados entre outros conteúdos.**\n'
             '- [Análise](https://medium.com/@joaovictordds/an%C3%A1lise-de-dados-do-banco-xyz-02eb55e8d7b9) do comportamento do banco XYZ e de seus clientes.\n'
             '- [Here](https://medium.com/@joaovictordds/data-analysis-of-xyz-bank-f9d6da27e0cc) the same analysis of the XYZ Bank in english.\n'
             '- Análise dos dados dos últimos balanços de [Petrobras](https://medium.com/@joaovictordds/an%C3%A1lise-explorat%C3%B3ria-de-petrobr%C3%A1s-utilizando-python-628f69ab5011)\n'     
