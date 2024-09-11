@@ -18,7 +18,7 @@ st.sidebar.write('''
 
 st.sidebar.markdown('---')
 
-paginas = ['Inicio','Nuvem de Palavras','Modelo - Liberação de Crédito']
+paginas = ['Inicio','Nuvem de Palavras','Modelo - Liberação de Crédito','Sistema Bancário DIO']
 pagina = st.sidebar.radio('Selecione um projeto:', paginas)
 
 st.sidebar.markdown('---')
@@ -205,3 +205,85 @@ if pagina == 'Modelo - Liberação de Crédito':
         st.markdown('---')
         
 
+if pagina == 'Sistema Bancário DIO':
+
+	from PIL import Image
+	# Carrega a imagem da pasta local
+	image = Image.open("dio.jpeg")
+	
+	# Exibe a imagem no topo da página
+	st.image(image, use_column_width=True)
+	
+	# Função para inicializar as variáveis de estado, garantindo que persistam entre interações
+	def inicializa_estado():
+	    if 'saldo' not in st.session_state:
+	        st.session_state.saldo = 0
+	    if 'limite' not in st.session_state:
+	        st.session_state.limite = 500
+	    if 'extrato' not in st.session_state:
+	        st.session_state.extrato = ""
+	    if 'numero_saques' not in st.session_state:
+	        st.session_state.numero_saques = 0
+	    if 'LIMITE_SAQUES' not in st.session_state:
+	        st.session_state.LIMITE_SAQUES = 3
+	
+	# Chama a função para garantir que o estado esteja inicializado
+	inicializa_estado()
+	
+	# Título e subtítulo
+	st.title("Banco DIO")
+	st.subheader("Bem-vindo novamente ao Banco DIO!")
+	
+	# Menu de opções com botões
+	st.write("Selecione a opção desejada:")
+	opcao = st.radio("", ["Extrato", "Depositar", "Sacar", "Sair"])
+	
+	# Opção de Depósito
+	if opcao == "Depositar":
+	    valor_deposito = st.number_input("Informe o valor do depósito:", min_value=0.0, step=0.01)
+	    if st.button("Confirmar Depósito"):
+	        if valor_deposito > 0:
+	            st.session_state.saldo += valor_deposito
+	            st.session_state.extrato += f"Depósito: + R$ {valor_deposito:.2f}\n"
+	            st.success(f"Depósito de R$ {valor_deposito:.2f} realizado com sucesso!")
+	        else:
+	            st.error("Operação falhou! O valor informado é inválido.")
+	
+	# Opção de Saque
+	elif opcao == "Sacar":
+	    valor_saque = st.number_input("Informe o valor do saque:", min_value=0.0, step=0.01)
+	    if st.button("Confirmar Saque"):
+	        excedeu_saldo = valor_saque > st.session_state.saldo
+	        excedeu_limite = valor_saque > st.session_state.limite
+	        excedeu_saques = st.session_state.numero_saques >= st.session_state.LIMITE_SAQUES
+	
+	        if excedeu_saldo:
+	            st.error("Operação falhou! Você não tem saldo suficiente.")
+	        elif excedeu_limite:
+	            st.error("Operação falhou! O valor do saque excede o limite.")
+	        elif excedeu_saques:
+	            st.error("Operação falhou! Número máximo de saques excedido.")
+	        elif valor_saque > 0:
+	            st.session_state.saldo -= valor_saque
+	            st.session_state.extrato += f"Saque: - R$ {valor_saque:.2f}\n"
+	            st.session_state.numero_saques += 1
+	            st.success(f"Saque de R$ {valor_saque:.2f} realizado com sucesso!")
+	        else:
+	            st.error("Operação falhou! O valor informado é inválido.")
+	
+	# Opção de Extrato
+	elif opcao == "Extrato":
+	    st.write("\n================ EXTRATO ================")
+	    if not st.session_state.extrato:
+	        st.write("Não foram realizadas movimentações.")
+	    else:
+	        st.text(st.session_state.extrato)
+	    st.write(f"\nSaldo: R$ {st.session_state.saldo:.2f}")
+	    st.write("==========================================")
+	
+	# Opção de Sair
+	elif opcao == "Sair":
+	    st.write('Obrigado pela preferência!!!')
+
+
+	
