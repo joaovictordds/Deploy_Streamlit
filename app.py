@@ -7,7 +7,7 @@ import pandas as pd
 import joblib
 
 
-# --------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 # GUIA LATERAL
 
 st.set_page_config(page_title = 'My Projects', layout = 'centered', initial_sidebar_state = 'auto')
