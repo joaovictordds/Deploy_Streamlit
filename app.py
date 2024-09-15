@@ -207,14 +207,21 @@ if pagina == 'Modelo - Liberação de Crédito':
 
 if pagina == 'Sistema Bancário DIO':
 
+	import streamlit as st
+	import textwrap
 	from PIL import Image
+		
 	# Carrega a imagem da pasta local
 	image = Image.open("dio.jpeg")
-	
+		
 	# Exibe a imagem no topo da página
 	st.image(image, use_column_width=True)
 	
-	# Função para inicializar as variáveis de estado, garantindo que persistam entre interações
+	# Título e subtítulo
+	st.title("Banco DIO")
+	st.subheader("Bem-vindo novamente ao Banco DIO!")
+	
+	# Função para inicializar as variáveis de estado
 	def inicializa_estado():
 	    if 'saldo' not in st.session_state:
 	        st.session_state.saldo = 0
@@ -224,66 +231,167 @@ if pagina == 'Sistema Bancário DIO':
 	        st.session_state.extrato = ""
 	    if 'numero_saques' not in st.session_state:
 	        st.session_state.numero_saques = 0
+	    if 'usuarios' not in st.session_state:
+	        st.session_state.usuarios = []
+	    if 'contas' not in st.session_state:
+	        st.session_state.contas = []
 	    if 'LIMITE_SAQUES' not in st.session_state:
 	        st.session_state.LIMITE_SAQUES = 3
+	    if 'AGENCIA' not in st.session_state:
+	        st.session_state.AGENCIA = '0001'
+	    if 'novo_usuario' not in st.session_state:
+	        st.session_state.novo_usuario = {'cpf': '', 'nome': '', 'data_nascimento': '', 'endereco': ''}
+	    if 'nova_conta' not in st.session_state:
+	        st.session_state.nova_conta = {'cpf': ''}
 	
-	# Chama a função para garantir que o estado esteja inicializado
-	inicializa_estado()
+	# Função para exibir o menu de opções
+	def menu():
+	    return st.radio("Selecione a opção desejada:", ["Depositar", "Sacar", "Extrato", "Nova conta", "Listar contas", "Novo usuário", "Sair"])
 	
-	# Título e subtítulo
-	st.title("Banco DIO")
-	st.subheader("Bem-vindo novamente ao Banco DIO!")
-	
-	# Menu de opções com botões
-	st.write("Selecione a opção desejada:")
-	opcao = st.radio("", ["Extrato", "Depositar", "Sacar", "Sair"])
-	
-	# Opção de Depósito
-	if opcao == "Depositar":
-	    valor_deposito = st.number_input("Informe o valor do depósito:", min_value=0.0, step=0.01)
-	    if st.button("Confirmar Depósito"):
-	        if valor_deposito > 0:
-	            st.session_state.saldo += valor_deposito
-	            st.session_state.extrato += f"Depósito: + R$ {valor_deposito:.2f}\n"
-	            st.success(f"Depósito de R$ {valor_deposito:.2f} realizado com sucesso!")
-	        else:
-	            st.error("Operação falhou! O valor informado é inválido.")
-	
-	# Opção de Saque
-	elif opcao == "Sacar":
-	    valor_saque = st.number_input("Informe o valor do saque:", min_value=0.0, step=0.01)
-	    if st.button("Confirmar Saque"):
-	        excedeu_saldo = valor_saque > st.session_state.saldo
-	        excedeu_limite = valor_saque > st.session_state.limite
-	        excedeu_saques = st.session_state.numero_saques >= st.session_state.LIMITE_SAQUES
-	
-	        if excedeu_saldo:
-	            st.error("Operação falhou! Você não tem saldo suficiente.")
-	        elif excedeu_limite:
-	            st.error("Operação falhou! O valor do saque excede o limite.")
-	        elif excedeu_saques:
-	            st.error("Operação falhou! Número máximo de saques excedido.")
-	        elif valor_saque > 0:
-	            st.session_state.saldo -= valor_saque
-	            st.session_state.extrato += f"Saque: - R$ {valor_saque:.2f}\n"
-	            st.session_state.numero_saques += 1
-	            st.success(f"Saque de R$ {valor_saque:.2f} realizado com sucesso!")
-	        else:
-	            st.error("Operação falhou! O valor informado é inválido.")
-	
-	# Opção de Extrato
-	elif opcao == "Extrato":
-	    st.write("\n================ EXTRATO ================")
-	    if not st.session_state.extrato:
-	        st.write("Não foram realizadas movimentações.")
+	# Função para depositar
+	def depositar(saldo, valor, extrato):
+	    if valor > 0:
+	        saldo += valor
+	        extrato += f'Depósito:\tR$ {valor:.2f}\n'
+	        st.success('Depósito realizado com sucesso!')
 	    else:
-	        st.text(st.session_state.extrato)
-	    st.write(f"\nSaldo: R$ {st.session_state.saldo:.2f}")
-	    st.write("==========================================")
+	        st.error('A operação falhou, o valor informado é inválido.')
+	    return saldo, extrato
 	
-	# Opção de Sair
-	elif opcao == "Sair":
-	    st.write('Obrigado pela preferência!!!')
+	# Função para sacar
+	def sacar(saldo, valor, extrato, limite, numero_saques, limite_saques):
+	    excedeu_saldo = valor > saldo
+	    excedeu_limite = valor > limite
+	    excedeu_saques = numero_saques >= limite_saques
+	
+	    if excedeu_saldo:
+	        st.error('A operação falhou! Não há saldo suficiente.')
+	    elif excedeu_limite:
+	        st.error('A operação falhou! O valor do saque supera o limite.')
+	    elif excedeu_saques:
+	        st.error('A operação falhou! Número máximo de saques excedido.')
+	    elif valor > 0:
+	        saldo -= valor
+	        extrato += f'Saque:\t\tR$ {valor:.2f}\n'
+	        numero_saques += 1
+	        st.success('Saque realizado com sucesso!')
+	    else:
+	        st.error('A operação falhou. O valor informado é inválido.')
+	    
+	    return saldo, extrato
+	
+	# Função para exibir o extrato
+	def exibir_extrato(saldo, extrato):
+	    st.write('========== EXTRATO ==========')
+	    if not extrato:
+	        st.write('Não foram realizadas movimentações.')
+	    else:
+	        st.text(extrato)
+	    st.write(f'Saldo:\t\tR$ {saldo:.2f}')
+	    st.write('=============================')
+	
+	# Função para criar usuário
+	def criar_usuario(usuarios):
+	    cpf = st.text_input('Informe o CPF (apenas números):', value=st.session_state.novo_usuario['cpf'])
+	    st.session_state.novo_usuario['cpf'] = cpf
+	    
+	    usuario_existente = filtrar_usuario(cpf, usuarios)
+	    
+	    if usuario_existente:
+	        st.error('Já existe um usuário cadastrado com este CPF!')
+	    else:
+	        nome = st.text_input('Informe o nome completo:', value=st.session_state.novo_usuario['nome'])
+	        st.session_state.novo_usuario['nome'] = nome
+	        
+	        data_nascimento = st.text_input('Informe a data de nascimento (dd-mm-aaaa):', value=st.session_state.novo_usuario['data_nascimento'])
+	        st.session_state.novo_usuario['data_nascimento'] = data_nascimento
+	        
+	        endereco = st.text_input('Informe o endereço (logradouro - nro - bairro - cidade - estado/sigla):', value=st.session_state.novo_usuario['endereco'])
+	        st.session_state.novo_usuario['endereco'] = endereco
+	        
+	        if st.button('Cadastrar usuário'):
+	            usuarios.append({
+	                'nome': nome,
+	                'data_nascimento': data_nascimento,
+	                'cpf': cpf,
+	                'endereco': endereco
+	            })
+	            st.success('Usuário cadastrado com sucesso!')
+	            st.session_state.novo_usuario = {'cpf': '', 'nome': '', 'data_nascimento': '', 'endereco': ''}
+	
+	# Função para filtrar usuário
+	def filtrar_usuario(cpf, usuarios):
+	    usuarios_filtrados = [usuario for usuario in usuarios if usuario['cpf'] == cpf]
+	    return usuarios_filtrados[0] if usuarios_filtrados else None
+	
+	# Função para criar conta
+	def criar_conta(agencia, numero_conta, usuarios, contas):
+	    cpf = st.text_input('Informe o CPF do usuário para criar a conta:', value=st.session_state.nova_conta['cpf'])
+	    st.session_state.nova_conta['cpf'] = cpf
+	
+	    if cpf and st.button('Criar conta'):
+	        usuario = filtrar_usuario(cpf, usuarios)
+	        if usuario:
+	            contas.append({'agencia': agencia, 'numero_conta': numero_conta, 'usuario': usuario})
+	            st.success('Conta cadastrada com sucesso!')
+	        else:
+	            st.error('Usuário não encontrado.')
+	
+	# Função para listar contas
+	def listar_contas(contas):
+	    if not contas:
+	        st.write('Nenhuma conta cadastrada.')
+	    else:
+	        for conta in contas:
+	            linha = f'''\
+	                Agência:\t{conta['agencia']}
+	                C/C:\t\t{conta['numero_conta']}
+	                Titular:\t{conta['usuario']['nome']}'''
+	            st.write('=' * 40)
+	            st.write(textwrap.dedent(linha))
+	
+	# Função principal
+	def main():
+	    inicializa_estado()
+	
+	    opcao = menu()
+	
+	    if opcao == "Depositar":
+	        valor = st.number_input('Informe o valor do depósito R$: ', min_value=0.0, step=0.01)
+	        if st.button('Confirmar Depósito'):
+	            st.session_state.saldo, st.session_state.extrato = depositar(st.session_state.saldo, valor, st.session_state.extrato)
+	
+	    elif opcao == "Sacar":
+	        valor = st.number_input('Informe o valor do saque R$: ', min_value=0.0, step=0.01)
+	        if st.button('Confirmar Saque'):
+	            st.session_state.saldo, st.session_state.extrato = sacar(
+	                saldo=st.session_state.saldo,
+	                valor=valor,
+	                extrato=st.session_state.extrato,
+	                limite=st.session_state.limite,
+	                numero_saques=st.session_state.numero_saques,
+	                limite_saques=st.session_state.LIMITE_SAQUES
+	            )
+	
+	    elif opcao == "Extrato":
+	        exibir_extrato(st.session_state.saldo, st.session_state.extrato)
+	
+	    elif opcao == "Novo usuário":
+	        criar_usuario(st.session_state.usuarios)
+	
+	    elif opcao == "Nova conta":
+	        numero_conta = len(st.session_state.contas) + 1
+	        criar_conta(st.session_state.AGENCIA, numero_conta, st.session_state.usuarios, st.session_state.contas)
+	
+	    elif opcao == "Listar contas":
+	        listar_contas(st.session_state.contas)
+	
+	    elif opcao == "Sair":
+	        st.write("Obrigado por usar o Banco DIO!")
+	
+	if __name__ == '__main__':
+	    main()
+	
 
 
 	
