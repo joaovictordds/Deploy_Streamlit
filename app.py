@@ -207,12 +207,52 @@ if pagina == 'Modelo - Liberação de Crédito':
 
 if pagina == 'Sistema Bancário DIO':
 
-	
-	from datetime import datetime
-	from abc import ABC, abstractmethod
 	from PIL import Image
-		
-	# Código
+	from abc import ABC, abstractmethod
+	from datetime import datetime
+	
+	# Função de inicialização dos dados no session_state
+	def inicializar_dados():
+	    if 'clientes' not in st.session_state:
+	        st.session_state['clientes'] = []
+	    if 'contas' not in st.session_state:
+	        st.session_state['contas'] = []
+	    if 'menu' not in st.session_state:
+	        st.session_state['menu'] = None
+	
+	# Função de boas-vindas
+	def boas_vindas():
+	    st.title("Bem-vindo ao Banco DIO")
+	    st.image('dio.jpeg', use_column_width=True)
+	    if st.button("Acessar o menu"):
+	        st.session_state['menu'] = 'menu'
+	
+	# Função para exibir o menu
+	def menu():
+	    st.title("Menu")
+	    escolha = st.selectbox(
+	        "Escolha uma opção:",
+	        ["Depositar", "Sacar", "Extrato", "Nova conta", "Listar contas", "Novo usuário", "Sair"]
+	    )
+	
+	    if escolha == "Depositar":
+	        depositar()
+	    elif escolha == "Sacar":
+	        sacar()
+	    elif escolha == "Extrato":
+	        exibir_extrato()
+	    elif escolha == "Novo usuário":
+	        criar_cliente()
+	    elif escolha == "Nova conta":
+	        criar_conta()
+	    elif escolha == "Listar contas":
+	        listar_contas()
+	    elif escolha == "Sair":
+	        st.write("Obrigado pela visita. Até a próxima!")
+	        st.image('dio.jpeg', use_column_width=True)
+	        st.session_state['menu'] = None  # Voltar à tela inicial de boas-vindas
+	
+	# Classe Cliente e suas derivadas
 	class Cliente:
 	    def __init__(self, endereco):
 	        self.endereco = endereco
@@ -224,7 +264,6 @@ if pagina == 'Sistema Bancário DIO':
 	    def adicionar_conta(self, conta):
 	        self.contas.append(conta)
 	
-	
 	class PessoaFisica(Cliente):
 	    def __init__(self, nome, data_nascimento, cpf, endereco):
 	        super().__init__(endereco)
@@ -232,7 +271,7 @@ if pagina == 'Sistema Bancário DIO':
 	        self.data_nascimento = data_nascimento
 	        self.cpf = cpf
 	
-	
+	# Classe Conta e suas derivadas
 	class Conta:
 	    def __init__(self, numero, cliente):
 	        self._saldo = 0
@@ -270,28 +309,27 @@ if pagina == 'Sistema Bancário DIO':
 	        excedeu_saldo = valor > saldo
 	
 	        if excedeu_saldo:
-	            st.error("Operação falhou! Você não tem saldo suficiente.")
+	            st.write("\n|==> Não há saldo suficiente em conta...")
 	
 	        elif valor > 0:
 	            self._saldo -= valor
-	            st.success("Saque realizado com sucesso!")
+	            st.write("\n=== Saque realizado com sucesso! ===")
 	            return True
 	
 	        else:
-	            st.error("Operação falhou! O valor informado é inválido.")
+	            st.write("\n|==> O valor informado é inválido...")
 	
 	        return False
 	
 	    def depositar(self, valor):
 	        if valor > 0:
 	            self._saldo += valor
-	            st.success("Depósito realizado com sucesso!")
+	            st.write("\n=== Depósito realizado com sucesso! ===")
 	        else:
-	            st.error("Operação falhou! O valor informado é inválido.")
+	            st.write("\n|==> O valor informado é inválido...")
 	            return False
 	
 	        return True
-	
 	
 	class ContaCorrente(Conta):
 	    def __init__(self, numero, cliente, limite=500, limite_saques=3):
@@ -300,18 +338,16 @@ if pagina == 'Sistema Bancário DIO':
 	        self._limite_saques = limite_saques
 	
 	    def sacar(self, valor):
-	        numero_saques = len(
-	            [transacao for transacao in self.historico.transacoes if transacao["tipo"] == Saque.__name__]
-	        )
+	        numero_saques = sum(1 for transacao in self.historico.transacoes if transacao["tipo"] == Saque.__name__)
 	
 	        excedeu_limite = valor > self._limite
 	        excedeu_saques = numero_saques >= self._limite_saques
 	
 	        if excedeu_limite:
-	            st.error("Operação falhou! O valor do saque excede o limite.")
+	            st.write("\n|==> O valor do saque excede o limite...")
 	
 	        elif excedeu_saques:
-	            st.error("Operação falhou! Número máximo de saques excedido.")
+	            st.write("\n|==> Número máximo de saques excedido...")
 	
 	        else:
 	            return super().sacar(valor)
@@ -319,13 +355,13 @@ if pagina == 'Sistema Bancário DIO':
 	        return False
 	
 	    def __str__(self):
-	        return f"""\
-	            Agência:\t{self.agencia}
-	            C/C:\t\t{self.numero}
-	            Titular:\t{self.cliente.nome}
+	        return f"""
+	        Agência: {self.agencia}
+	        C/C: {self.numero}
+	        Titular: {self.cliente.nome}
 	        """
 	
-	
+	# Classe Historico e Transações
 	class Historico:
 	    def __init__(self):
 	        self._transacoes = []
@@ -343,7 +379,6 @@ if pagina == 'Sistema Bancário DIO':
 	            }
 	        )
 	
-	
 	class Transacao(ABC):
 	    @property
 	    @abstractmethod
@@ -353,7 +388,6 @@ if pagina == 'Sistema Bancário DIO':
 	    @abstractmethod
 	    def registrar(self, conta):
 	        pass
-	
 	
 	class Saque(Transacao):
 	    def __init__(self, valor):
@@ -369,7 +403,6 @@ if pagina == 'Sistema Bancário DIO':
 	        if sucesso_transacao:
 	            conta.historico.adicionar_transacao(self)
 	
-	
 	class Deposito(Transacao):
 	    def __init__(self, valor):
 	        self._valor = valor
@@ -384,113 +417,97 @@ if pagina == 'Sistema Bancário DIO':
 	        if sucesso_transacao:
 	            conta.historico.adicionar_transacao(self)
 	
+	# Funções do sistema bancário
+	def filtrar_cliente(cpf, clientes):
+	    return next((cliente for cliente in clientes if cliente.cpf == cpf), None)
 	
-	# Streamlit App
-	def main():
-	    if 'clientes' not in st.session_state:
-	        st.session_state.clientes = []
-	    if 'contas' not in st.session_state:
-	        st.session_state.contas = []
+	def recuperar_conta_cliente(cliente):
+	    if not cliente.contas:
+	        st.write("\n |==> Cliente não possui conta!")
+	        return None
 	
-	    
+	    if len(cliente.contas) == 1:
+	        return cliente.contas[0]
 	
-	    menu = ['Inicio',"Depósito", "Saque", "Extrato", "Nova Conta", "Listar Contas", "Novo Usuário", "Sair"]
+	    escolha = st.selectbox("Escolha a conta", [f"Conta: {conta.numero}" for conta in cliente.contas])
+	    return cliente.contas[int(escolha.split(":")[1].strip()) - 1]
 	
-	    escolha = st.selectbox("Escolha uma opção", menu)
-	
-	    if escolha == 'Inicio':
-	        print('')
-	        st.subheader('Bem-vindo novamente ao Banco DIO')
-	        st.write(' ')
-	        st.write("Navegue pela barra acima para selecionar a opção desejada.")
-	        st.image('dio.jpeg', use_column_width=True)
-	    
-	    if escolha == "Sair":
-	        print('')
-	        st.write("Obrigado pela visita. Até a próxima!")
-	        print('')
-	        st.image('dio.jpeg', use_column_width=True)
+	def realizar_transacao(cpf, clientes, transacao):
+	    cliente = filtrar_cliente(cpf, clientes)
+	    if not cliente:
+	        st.write("\n |==> Cliente não encontrado!")
 	        return
 	
-	    if escolha == "Depósito":
-	        cpf = st.text_input("Informe o CPF do cliente", key="cpf_dep")
-	        valor = st.number_input("Informe o valor do depósito", min_value=0.0, step=0.01, key="valor_dep")
-	        if st.button("Realizar Depósito"):
-	            cliente = next((c for c in st.session_state.clientes if c.cpf == cpf), None)
-	            if cliente:
-	                conta = next((c for c in cliente.contas), None)
-	                if conta:
-	                    transacao = Deposito(valor)
-	                    cliente.realizar_transacao(conta, transacao)
-	                else:
-	                    st.error("Cliente não possui conta!")
-	            else:
-	                st.error("Cliente não encontrado!")
+	    conta = recuperar_conta_cliente(cliente)
+	    if not conta:
+	        return
 	
-	    elif escolha == "Saque":
-	        cpf = st.text_input("Informe o CPF do cliente", key="cpf_saq")
-	        valor = st.number_input("Informe o valor do saque", min_value=0.0, step=0.01, key="valor_saq")
-	        if st.button("Realizar Saque"):
-	            cliente = next((c for c in st.session_state.clientes if c.cpf == cpf), None)
-	            if cliente:
-	                conta = next((c for c in cliente.contas), None)
-	                if conta:
-	                    transacao = Saque(valor)
-	                    cliente.realizar_transacao(conta, transacao)
-	                else:
-	                    st.error("Cliente não possui conta!")
-	            else:
-	                st.error("Cliente não encontrado!")
+	    cliente.realizar_transacao(conta, transacao)
 	
-	    elif escolha == "Extrato":
-	        cpf = st.text_input("Informe o CPF do cliente", key="cpf_ext")
-	        if st.button("Exibir Extrato"):
-	            cliente = next((c for c in st.session_state.clientes if c.cpf == cpf), None)
-	            if cliente:
-	                conta = next((c for c in cliente.contas), None)
-	                if conta:
-	                    st.write("=== EXTRATO ===")
-	                    for transacao in conta.historico.transacoes:
-	                        st.write(f"{transacao['tipo']}: R$ {transacao['valor']:.2f}")
-	                    st.write(f"Saldo: R$ {conta.saldo:.2f}")
-	                else:
-	                    st.error("Cliente não possui conta!")
-	            else:
-	                st.error("Cliente não encontrado!")
+	def depositar():
+	    cpf = st.text_input("Informe o CPF:")
+	    valor = st.number_input("Informe o valor do depósito:", min_value=0.01)
+	    if st.button("Confirmar Depósito"):
+	        transacao = Deposito(valor)
+	        realizar_transacao(cpf, st.session_state['clientes'], transacao)
 	
-	    elif escolha == "Nova Conta":
-	        cpf = st.text_input("Informe o CPF do cliente para nova conta", key="cpf_nc")
-	        if st.button("Criar Nova Conta"):
-	            cliente = next((c for c in st.session_state.clientes if c.cpf == cpf), None)
-	            if cliente:
-	                numero_conta = len(st.session_state.contas) + 1
-	                conta = ContaCorrente.nova_conta(cliente=cliente, numero=numero_conta)
-	                st.session_state.contas.append(conta)
-	                cliente.contas.append(conta)
-	                st.success("Conta criada com sucesso!")
-	            else:
-	                st.error("Cliente não encontrado!")
+	def sacar():
+	    cpf = st.text_input("Informe o CPF:")
+	    valor = st.number_input("Informe o valor do saque:", min_value=0.01)
+	    if st.button("Confirmar Saque"):
+	        transacao = Saque(valor)
+	        realizar_transacao(cpf, st.session_state['clientes'], transacao)
 	
-	    elif escolha == "Listar Contas":
-	        st.write("=== CONTAS ===")
-	        for conta in st.session_state.contas:
-	            st.write(f"Agência: {conta.agencia}")
-	            st.write(f"C/C: {conta.numero}")
-	            st.write(f"Titular: {conta.cliente.nome}")
-	            st.write("=" * 30)
+	def exibir_extrato():
+	    cpf = st.text_input("Informe o CPF:")
+	    cliente = filtrar_cliente(cpf, st.session_state['clientes'])
 	
-	    elif escolha == "Novo Usuário":
-	        cpf = st.text_input("Informe o CPF do novo cliente", key="cpf_nu")
-	        nome = st.text_input("Informe o nome completo", key="nome_nu")
-	        data_nascimento = st.text_input("Informe a data de nascimento (dd-mm-aaaa)", key="data_nasc_nu")
-	        endereco = st.text_input("Informe o endereço", key="endereco_nu")
-	        if st.button("Criar Novo Usuário"):
-	            if not next((c for c in st.session_state.clientes if c.cpf == cpf), None):
-	                cliente = PessoaFisica(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
-	                st.session_state.clientes.append(cliente)
-	                st.success("Cliente criado com sucesso!")
-	            else:
-	                st.error("Já existe cliente com esse CPF!")
+	    if cliente:
+	        conta = recuperar_conta_cliente(cliente)
+	        if conta:
+	            st.write("=== Extrato ===")
+	            for transacao in conta.historico.transacoes:
+	                st.write(f"{transacao['tipo']} em {transacao['data']} ---> R$ {transacao['valor']:.2f}")
+	            st.write(f"Saldo: R$ {conta.saldo:.2f}")
+	    else:
+	        st.write("\n |==> Cliente não encontrado!")
+	
+	def criar_cliente():
+	    cpf = st.text_input("Informe o CPF:")
+	    nome = st.text_input("Informe o nome:")
+	    data_nascimento = st.text_input("Informe a data de nascimento:")
+	    endereco = st.text_input("Informe o endereço:")
+	    
+	    if st.button("Criar Cliente"):
+	        cliente = PessoaFisica(nome, data_nascimento, cpf, endereco)
+	        st.session_state['clientes'].append(cliente)
+	        st.write("\n=== Cliente criado com sucesso! ===")
+	
+	def criar_conta():
+	    cpf = st.text_input("Informe o CPF do cliente:")
+	    cliente = filtrar_cliente(cpf, st.session_state['clientes'])
+	
+	    if cliente:
+	        numero_conta = len(st.session_state['contas']) + 1
+	        conta = ContaCorrente.nova_conta(cliente, numero_conta)
+	        st.session_state['contas'].append(conta)
+	        cliente.adicionar_conta(conta)
+	        st.write("\n=== Conta criada com sucesso! ===")
+	    else:
+	        st.write("\n |==> Cliente não encontrado!")
+	
+	def listar_contas():
+	    for conta in st.session_state['contas']:
+	        st.write(str(conta))
+	
+	# Função principal
+	def main():
+	    inicializar_dados()
+	    
+	    if st.session_state['menu'] is None:
+	        boas_vindas()
+	    else:
+	        menu()
 	
 	if __name__ == "__main__":
 	    main()
