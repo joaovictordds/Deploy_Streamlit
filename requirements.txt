@@ -7,3 +7,5 @@ pillow == 10.2.0
 pandas == 2.2.0
 joblib == 1.3.2
 scikit-learn == 1.4.1.post1
+yt-dlp == 2024.8.6
+-e git+https://github.com/joaovictordds/doau.git#egg=extrator_audio = 0.1.0
