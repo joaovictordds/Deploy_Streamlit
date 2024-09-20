@@ -45,7 +45,7 @@ if pagina == 'Inicio':
     st.title("Bem-vindo!")
 
     # Cabeçalho
-    #st.subheader("Explorando o mundo dos dados")
+    #st.subheader("--- * 30 ")
 
     # Imagem
     st.image("da.png",  use_column_width=True)
