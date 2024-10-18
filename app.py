@@ -28,7 +28,7 @@ st.sidebar.markdown('---')
 st.sidebar.write('''
              
 Acesse:\n
-- [Portfolio](https://www.datascienceportfol.io/joaovictor)\n
+
 - [GitHub](https://github.com/joaovictordds)\n
 - [LinkedIn](https://linkedin.com/in/joaovictordds)\n            
 
@@ -52,8 +52,14 @@ if pagina == 'Inicio':
 
     # Texto
     st.write(             
-            '**Este é um blog pessoal dedicado à análise de dados, data science e data analytics onde você encontrará modelos de ML, projetos, análise de dados entre outros conteúdos.**\n'
-            '- [Análise](https://medium.com/@joaovictordds/an%C3%A1lise-de-dados-do-banco-xyz-02eb55e8d7b9) do comportamento do banco XYZ e de seus clientes.\n'
+            '**Este é um blog pessoal dedicado aos meus estudos na área de dados, onde você encontrará dashboards e relatórios, modelos de ML, projetos entre outros conteúdos.**\n'
+            
+	    '- [Dashboard](https://app.powerbi.com/view?r=eyJrIjoiOWE4ZWU2ZjEtZjkwMy00ODE5LWFjNjItYTRjNTA4NzY2MmVhIiwidCI6ImU0M2Y1NzdhLWEzNjktNGQ4My05MjliLTdlNzc3MDYwNmFmOCJ9) de vendas.\n'
+	    '- [Relatório de Vendas](https://app.powerbi.com/view?r=eyJrIjoiNTk3NDdjZGYtOTQ4ZS00M2RkLWE4ZDEtOTViMDcwOWYzMzVmIiwidCI6ImU0M2Y1NzdhLWEzNjktNGQ4My05MjliLTdlNzc3MDYwNmFmOCJ9) por segmento.\n'
+	    '- [Relatório de Faturamento e Vendas](https://app.powerbi.com/view?r=eyJrIjoiMDA0OTg3MjMtODI5Ny00YzE1LWJhNWItMjdjODgxOTM0MTM2IiwidCI6ImU0M2Y1NzdhLWEzNjktNGQ4My05MjliLTdlNzc3MDYwNmFmOCJ9)\n'
+
+	    '**Análises descritivas de bases de dados genéricas**'
+	    '- [Análise](https://medium.com/@joaovictordds/an%C3%A1lise-de-dados-do-banco-xyz-02eb55e8d7b9) do comportamento do banco XYZ e de seus clientes.\n'
             '- [Here](https://medium.com/@joaovictordds/data-analysis-of-xyz-bank-f9d6da27e0cc) the same analysis of the XYZ Bank in english.\n'
             '- Análise dos dados dos últimos balanços de [Petrobras](https://medium.com/@joaovictordds/an%C3%A1lise-explorat%C3%B3ria-de-petrobr%C3%A1s-utilizando-python-628f69ab5011)\n'     
             '- [Exploratory analysis](https://medium.com/@joaovictordds/exploratory-analysis-of-petrobras-with-python-a00de6496e36) of the numbers of the Petrobras company.\n'
