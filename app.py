@@ -58,7 +58,7 @@ if pagina == 'Inicio':
 	    '- [Relatório de Vendas](https://app.powerbi.com/view?r=eyJrIjoiNTk3NDdjZGYtOTQ4ZS00M2RkLWE4ZDEtOTViMDcwOWYzMzVmIiwidCI6ImU0M2Y1NzdhLWEzNjktNGQ4My05MjliLTdlNzc3MDYwNmFmOCJ9) por segmento.\n'
 	    '- [Relatório de Faturamento e Vendas](https://app.powerbi.com/view?r=eyJrIjoiMDA0OTg3MjMtODI5Ny00YzE1LWJhNWItMjdjODgxOTM0MTM2IiwidCI6ImU0M2Y1NzdhLWEzNjktNGQ4My05MjliLTdlNzc3MDYwNmFmOCJ9)\n'
 
-	    '\n**Análises descritivas de bases de dados genéricas**\n'
+	    '\n**Análises descritivas de bases de dados genéricas:**\n'
 	    '- [Análise](https://medium.com/@joaovictordds/an%C3%A1lise-de-dados-do-banco-xyz-02eb55e8d7b9) do comportamento do banco XYZ e de seus clientes.\n'
             '- [Here](https://medium.com/@joaovictordds/data-analysis-of-xyz-bank-f9d6da27e0cc) the same analysis of the XYZ Bank in english.\n'
             '- Análise dos dados dos últimos balanços de [Petrobras](https://medium.com/@joaovictordds/an%C3%A1lise-explorat%C3%B3ria-de-petrobr%C3%A1s-utilizando-python-628f69ab5011)\n'     
